@@ -23,7 +23,8 @@ function wordlift_shortcode_navigator() {
     
     // get the related posts and entities.
     $related_posts = wl_get_referenced_entity_ids( $post->ID );
-    var_dump( $related_posts );
+    
+    $category = get_iptc_category_link( $post->ID );
     
     $content = '<div id="wl-navigator-widget">';
     foreach ( $related_posts as $related_post_id ) {
