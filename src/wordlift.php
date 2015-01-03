@@ -1044,6 +1044,7 @@ require_once( 'modules/freebase_image_proxy/wordlift_freebase_image_proxy.php' )
 
 // add iptc module
 require_once( 'modules/iptc/iptc.php' );
+require_once( 'modules/interpreter/wordlift_interpreter.php' );
 
 // Shortcodes
 
