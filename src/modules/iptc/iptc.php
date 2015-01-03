@@ -102,3 +102,25 @@ function wl_split_iptc_label( $label ) {
 	
 	return $labels;
 }
+
+/**
+ * Get iptc category link(s) for this post
+ * 
+ * @param int $post_id The post ID.
+ *
+ * @return mixed One or (if necessary) an Array of URLs.
+ */
+function get_iptc_category_link( $post_id ) {
+    
+    $links = array();
+    $categories = get_the_terms( $post_id, 'iptc' );
+    
+    foreach( $categories as $category ) {
+        $links[] = get_term_link( $category, 'iptc' );
+    }
+    
+    if( count( $links ) == 1 ) {
+        return $links[0];
+    }
+    return $links;
+}
