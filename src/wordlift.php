@@ -1041,6 +1041,7 @@ require_once( 'modules/caching/wordlift_caching.php' );
 require_once( 'modules/profiling/wordlift_profiling.php' );
 require_once( 'modules/redirector/wordlift_redirector.php' );
 require_once( 'modules/freebase_image_proxy/wordlift_freebase_image_proxy.php' );
+require_once( 'modules/navigator_widget/wordlift_navigator_widget.php' );
 
 // add iptc module
 require_once( 'modules/iptc/iptc.php' );
