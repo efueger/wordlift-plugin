@@ -92,6 +92,7 @@ function wl_split_iptc_code( $code ) {
  * Split iptc label 
  *
  * @param string $label The iptc label to be splitted.
+ * @param boolean $single Get the first or all the results.
  *
  * @return array Splitted labels collection 
  */
@@ -108,9 +109,9 @@ function wl_split_iptc_label( $label ) {
  * 
  * @param int $post_id The post ID.
  *
- * @return mixed One or (if necessary) an Array of URLs.
+ * @return mixed One or (if $single is true) an Array of URLs.
  */
-function get_iptc_category_link( $post_id ) {
+function get_iptc_category_links( $post_id, $single=false ) {
     
     $links = array();
     $categories = get_the_terms( $post_id, 'iptc' );
@@ -119,8 +120,62 @@ function get_iptc_category_link( $post_id ) {
         $links[] = get_term_link( $category, 'iptc' );
     }
     
-    if( count( $links ) == 1 ) {
+    if( $single ) {
         return $links[0];
     }
     return $links;
+}
+
+/**
+ * Get iptc category name(s) for this post
+ * 
+ * @param int $post_id The post ID.
+ * @param boolean $single Get the first or all the results.
+ *
+ * @return mixed One or (if $single is true) an Array of names.
+ */
+function get_iptc_category_names( $post_id, $single=false ) {
+    
+    $names = array();
+    $categories = get_the_terms( $post_id, 'iptc' );
+    
+    foreach( $categories as $category ) {
+        $names[] = $category->name;
+    }
+    
+    if( $single ) {
+        return $names[0];
+    }
+    return $names;
+}
+
+/**
+ * Get a related post from the same iptc category of a post.
+ * 
+ * @param int $post_id The post ID.
+ * 
+ * @return int Id of the post, or null.
+ */
+function wl_iptc_get_most_related_post( $post_id ) {
+    
+    $categories = get_the_terms( $post_id, 'iptc' );
+    
+    // I don't know how to take the first element of an *object*... TODO: avoid the loop.
+    foreach( $categories as $category ) {
+        $iptc_category = $category;
+        break;
+    }
+    
+    // create query argument array
+    $args = array(
+        'iptc'   => $iptc_category
+    );
+
+    // retrieve posts
+    $post = get_posts( $args );
+    
+    if( empty( $post ) || is_wp_error( $post ) ) {
+        return null;
+    }
+    return $post;
 }
