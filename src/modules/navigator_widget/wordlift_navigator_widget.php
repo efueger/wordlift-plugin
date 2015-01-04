@@ -26,7 +26,10 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
         
         // loop over them and take the first one which is not already in the $related_posts
         foreach ( $referencing_posts as $referencing_post ) {
-            if( isset( $referencing_post->ID ) && !in_array( $referencing_post->ID, $related_posts ) ) {
+            var_dump($related_posts, $referencing_post->ID);
+            if( isset( $referencing_post->ID )
+                    && !in_array( $referencing_post->ID, $related_posts )
+                    && $referencing_post->ID != $post_id ) {
                 $related_posts[] = $referencing_post->ID;
                 break;
             }
@@ -34,6 +37,10 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
     }
     
     return $related_posts;
+}
+
+function wl_get_the_post_thumbnail_src( $img ) {
+  return (preg_match('~\bsrc="([^"]++)"~', $img, $matches)) ? $matches[1] : '';
 }
 
 function wordlift_shortcode_navigator() {
@@ -45,34 +52,43 @@ function wordlift_shortcode_navigator() {
     // get the current post.
     $post = get_post( get_the_ID() );
     
-    // get posts that will populate the navigator (criteria may vary, see function)
+    // get posts that will populate the navigator (criteria may vary, see function *wordlift_shortcode_navigator_populate*)
     $related_posts = wordlift_shortcode_navigator_populate( $post->ID );
     
+    // build the HTML
     $content = '<div id="wl-navigator-widget">';
     foreach ( $related_posts as $related_post_id ) {
         
         $related_post = get_post( $related_post_id );
         
-        $thumb = get_the_post_thumbnail( $related_post_id, 'thumbnail' );
+        $thumb = wl_get_the_post_thumbnail_src( get_the_post_thumbnail( $related_post_id, 'medium' ) );
         if( empty( $thumb ) ) {
-            $thumb = '<img src="' . plugins_url('js-client/slick/missing-image-150x150.png', __FILE__ ) . '" />';
+            $thumb = plugins_url( 'js-client/slick/missing-image-150x150.png', __FILE__ );
         }
         
         $category_link = get_iptc_category_links( $related_post_id, true );
         $category_name = get_iptc_category_names( $related_post_id, true );
         
-        $content .= '<div class="wl-navigator-card">'
-            . $thumb .
-            '<a class="wl-navigator-trigger" href="' . get_permalink( $related_post_id ) . '">' . $related_post->post_title . '</a>
-            <a class="wl-navigator-context" href="' . $category_link . '">' . $category_name . '</a>
+        $content .= '<div class="wl-navigator-card">
+            <div class="wl-navigator-lens" style="background-image:url(' . $thumb . ')">
+                <span class="wl-navigator-trigger">
+                    <a href="' . get_permalink( $related_post_id ) . '">' . $related_post->post_title . '</a>
+                </span>
+            </div>
+            <div class="wl-navigator-context">
+                <a href="' . $category_link . '">' . $category_name . '</a>
+            </div>
         </div>';
     }
     $content .= '</div>';
 
+    // add js
     $content .= '<script>$=jQuery; $(document).ready(function(){
 
             // Some css fixing
-            $(".wl-navigator-card > img").addClass("wl-navigator-lens");
+            setTimeout( function() {
+                $(".wl-navigator-lens").height( $(".wl-navigator-lens").width() );
+            }, 500);
             setInterval( function(){
                 $(".slick-prev, .slick-next").css("background", "gray");
             }, 500);
