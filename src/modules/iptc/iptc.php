@@ -202,6 +202,8 @@ function wl_iptc_get_posts_in_same_category_or_parent_categories( $post_id, $ipt
         } else {
             return wl_iptc_get_posts_in_same_category_or_parent_categories( $post_id, $parent_category );
         }
+    } else {
+        return $posts_list;
     }
 }
 
@@ -216,7 +218,10 @@ function wl_iptc_get_parent_category( $iptc_category ) {
     
     $term = get_term_by( 'slug', $iptc_category, 'iptc' );
     $parent_category = get_term( $term->parent, 'iptc' );
-    var_dump($parent_category);
     
-    return $parent_category->name;
+    if( isset( $parent_category->slug ) ) {
+        return $parent_category->slug;
+    } else {
+        return null;
+    }
 }

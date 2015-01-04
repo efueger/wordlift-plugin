@@ -9,7 +9,7 @@ function wordlift_register_shortcode_navigator() {
 
 function wordlift_shortcode_navigator() {
 
-    // Include mobifyjs on page
+    // include mobifyjs on page
     wp_enqueue_script(
             'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ )
     );
@@ -20,11 +20,32 @@ function wordlift_shortcode_navigator() {
     // get the current post.
     $post = get_post( get_the_ID() );
     
-    // get the related posts and entities.
-    $related_posts = wl_get_referenced_entity_ids( $post->ID );
-    // TODO: get posts in which each of this entities is recently referenced
+    // add as first the most recent article in the same iptc category
+    $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post->ID );
+    if( isset( $related_posts->ID ) ) {
+        $related_posts = $related_posts->ID;
+    } else {
+        $related_posts = array();
+    }
     
-    array_unshift( $related_posts, wl_iptc_get_most_recent_post_in_same_category( $post->ID ) );
+    // get the related entities, and for each one retrieve the most recent post regarding it.
+    $related_entities = wl_get_referenced_entity_ids( $post->ID );
+    foreach ( $related_entities as $rel_entity ) {
+        
+        // take the id of posts referencing the entity
+        $referencing_posts = wl_get_referencing_posts( $rel_entity );
+        
+        // loop over them and take the first one which is not already in the $related_posts
+        foreach ( $referencing_posts as $referencing_post ) {
+            if( isset( $referencing_post->ID ) && !in_array( $referencing_post->ID, $related_posts ) ) {
+                $related_posts[] = $referencing_post->ID;
+                break;
+            }
+        }
+    }
+    //$related_posts = array_unique($related_posts);
+    var_dump($related_posts);
+    
     
     $content = '<div id="wl-navigator-widget">';
     foreach ( $related_posts as $related_post_id ) {
