@@ -143,6 +143,8 @@ function get_iptc_category_names( $post_id, $single=false ) {
         $names[] = $category->name;
     }
     
+    // TODO: build full name! by climbing taxonomy
+    
     if( $single ) {
         return $names[0];
     }
@@ -156,26 +158,65 @@ function get_iptc_category_names( $post_id, $single=false ) {
  * 
  * @return int Id of the post, or null.
  */
-function wl_iptc_get_most_related_post( $post_id ) {
+function wl_iptc_get_most_recent_post_in_same_category( $post_id ) {
     
     $categories = get_the_terms( $post_id, 'iptc' );
     
     // I don't know how to take the first element of an *object*... TODO: avoid the loop.
     foreach( $categories as $category ) {
-        $iptc_category = $category;
+        $iptc_category = $category->slug;
         break;
     }
     
+    $posts = wl_iptc_get_posts_in_same_category_or_parent_categories( $post_id, $iptc_category );
+    
+    if( empty( $posts ) || is_wp_error( $posts ) ) {
+        return null;
+    }
+    return $posts[0];
+}
+
+/**
+ * Get posts from the same iptc category of a post.
+ * If nothing is found, search in the parent category.
+ * 
+ * @param int $post_id The post ID.
+ * @param string $iptc_category
+ * 
+ * @return Array List of posts as outputted by Wordpress' *get_posts*.
+ */
+function wl_iptc_get_posts_in_same_category_or_parent_categories( $post_id, $iptc_category ) {
     // create query argument array
     $args = array(
-        'iptc'   => $iptc_category
+        'iptc'   => $iptc_category,
+        'post__not_in' => array( $post_id )
     );
 
     // retrieve posts
-    $post = get_posts( $args );
-    
-    if( empty( $post ) || is_wp_error( $post ) ) {
-        return null;
+    $posts_list = get_posts( $args );
+    if( empty( $posts_list ) ) {
+        $parent_category = wl_iptc_get_parent_category( $iptc_category );
+        
+        if( is_null( $parent_category ) ) {
+            return null;
+        } else {
+            return wl_iptc_get_posts_in_same_category_or_parent_categories( $post_id, $parent_category );
+        }
     }
-    return $post;
+}
+
+/**
+ * Get parent category in the iptc taxonomy.
+ * 
+ * @param string $iptc_category
+ * 
+ * @return mixed Slug of parent taxonomy, otherwise null.
+ */
+function wl_iptc_get_parent_category( $iptc_category ) {
+    
+    $term = get_term_by( 'slug', $iptc_category, 'iptc' );
+    $parent_category = get_term( $term->parent, 'iptc' );
+    var_dump($parent_category);
+    
+    return $parent_category->name;
 }

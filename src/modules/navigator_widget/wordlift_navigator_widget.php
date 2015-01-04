@@ -19,12 +19,12 @@ function wordlift_shortcode_navigator() {
         
     // get the current post.
     $post = get_post( get_the_ID() );
-    $depth = 5;
     
     // get the related posts and entities.
     $related_posts = wl_get_referenced_entity_ids( $post->ID );
+    // TODO: get posts in which each of this entities is recently referenced
     
-    array_unshift( $related_posts, wl_iptc_get_most_related_post( $post->ID ) );
+    array_unshift( $related_posts, wl_iptc_get_most_recent_post_in_same_category( $post->ID ) );
     
     $content = '<div id="wl-navigator-widget">';
     foreach ( $related_posts as $related_post_id ) {
