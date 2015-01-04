@@ -7,29 +7,18 @@ function wordlift_register_shortcode_navigator() {
     add_shortcode('wl-navigator', 'wordlift_shortcode_navigator');
 }
 
-function wordlift_shortcode_navigator() {
-
-    // include mobifyjs on page
-    wp_enqueue_script(
-            'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ )
-    );
-    wp_enqueue_style(
-            'slick-css', plugins_url( 'js-client/slick/slick.css', __FILE__ )
-    );
-        
-    // get the current post.
-    $post = get_post( get_the_ID() );
+function wordlift_shortcode_navigator_populate( $post_id ) {
     
     // add as first the most recent article in the same iptc category
-    $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post->ID );
+    $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post_id );
     if( isset( $related_posts->ID ) ) {
-        $related_posts = $related_posts->ID;
+        $related_posts = array( $related_posts->ID );
     } else {
         $related_posts = array();
     }
     
     // get the related entities, and for each one retrieve the most recent post regarding it.
-    $related_entities = wl_get_referenced_entity_ids( $post->ID );
+    $related_entities = wl_get_referenced_entity_ids( $post_id );
     foreach ( $related_entities as $rel_entity ) {
         
         // take the id of posts referencing the entity
@@ -43,9 +32,21 @@ function wordlift_shortcode_navigator() {
             }
         }
     }
-    //$related_posts = array_unique($related_posts);
-    var_dump($related_posts);
     
+    return $related_posts;
+}
+
+function wordlift_shortcode_navigator() {
+
+    // include mobifyjs on page
+    wp_enqueue_script( 'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ ) );
+    wp_enqueue_style( 'slick-css', plugins_url( 'js-client/slick/slick.css', __FILE__ ) );
+        
+    // get the current post.
+    $post = get_post( get_the_ID() );
+    
+    // get posts that will populate the navigator (criteria may vary, see function)
+    $related_posts = wordlift_shortcode_navigator_populate( $post->ID );
     
     $content = '<div id="wl-navigator-widget">';
     foreach ( $related_posts as $related_post_id ) {
