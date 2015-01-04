@@ -26,11 +26,10 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
         
         // loop over them and take the first one which is not already in the $related_posts
         foreach ( $referencing_posts as $referencing_post ) {
-            var_dump($related_posts, $referencing_post->ID);
             if( isset( $referencing_post->ID )
-                    && !in_array( $referencing_post->ID, $related_posts )
+                    && !in_array( array( $referencing_post->ID, $rel_entity ), $related_posts )
                     && $referencing_post->ID != $post_id ) {
-                $related_posts[] = $referencing_post->ID;
+                $related_posts[] = array( $referencing_post->ID, $rel_entity );
                 break;
             }
         }
@@ -53,12 +52,14 @@ function wordlift_shortcode_navigator() {
     $post = get_post( get_the_ID() );
     
     // get posts that will populate the navigator (criteria may vary, see function *wordlift_shortcode_navigator_populate*)
-    $related_posts = wordlift_shortcode_navigator_populate( $post->ID );
+    $related_posts_and_entities = wordlift_shortcode_navigator_populate( $post->ID );
     
     // build the HTML
+    $counter = 0;
     $content = '<div id="wl-navigator-widget">';
-    foreach ( $related_posts as $related_post_id ) {
+    foreach ( $related_posts_and_entities as $related_post_entity ) {
         
+        $related_post_id = $related_post_entity[0];
         $related_post = get_post( $related_post_id );
         
         $thumb = wl_get_the_post_thumbnail_src( get_the_post_thumbnail( $related_post_id, 'medium' ) );
@@ -66,8 +67,15 @@ function wordlift_shortcode_navigator() {
             $thumb = plugins_url( 'js-client/slick/missing-image-150x150.png', __FILE__ );
         }
         
-        $category_link = get_iptc_category_links( $related_post_id, true );
-        $category_name = get_iptc_category_names( $related_post_id, true );
+        if( $counter == 0 || !isset( $related_post_entity[1] ) ) {
+            // the first card is a post suggested by category
+            $context_link = get_iptc_category_links( $related_post_id, true );
+            $context_name = get_iptc_category_names( $related_post_id, true );
+        } else {
+            // the other cards are suggested by entities
+            $context_link = get_permalink( $related_post_entity[1] );
+            $context_name = get_post( $related_post_entity[1] )->post_name;
+        }
         
         $content .= '<div class="wl-navigator-card">
             <div class="wl-navigator-lens" style="background-image:url(' . $thumb . ')">
@@ -76,9 +84,11 @@ function wordlift_shortcode_navigator() {
                 </span>
             </div>
             <div class="wl-navigator-context">
-                <a href="' . $category_link . '">' . $category_name . '</a>
+                <a href="' . $context_link . '">' . $context_name . '</a>
             </div>
         </div>';
+        
+        $counter+=1;
     }
     $content .= '</div>';
 
