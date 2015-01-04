@@ -19,6 +19,8 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
     
     // get the related entities, and for each one retrieve the most recent post regarding it.
     $related_entities = wl_get_referenced_entity_ids( $post_id );
+    $related_posts_ids = array();
+    $related_entities_ids = array();
     foreach ( $related_entities as $rel_entity ) {
         
         // take the id of posts referencing the entity
@@ -27,8 +29,11 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
         // loop over them and take the first one which is not already in the $related_posts
         foreach ( $referencing_posts as $referencing_post ) {
             if( isset( $referencing_post->ID )
-                    && !in_array( array( $referencing_post->ID, $rel_entity ), $related_posts )
+                    && !in_array( $referencing_post->ID, $related_posts_ids )
+                    && !in_array( $rel_entity, $related_entities_ids )
                     && $referencing_post->ID != $post_id ) {
+                $related_posts_ids = array( $referencing_post->ID );
+                $related_entities_ids = array( $rel_entity );
                 $related_posts[] = array( $referencing_post->ID, $rel_entity );
                 break;
             }
@@ -47,6 +52,7 @@ function wordlift_shortcode_navigator() {
     // include mobifyjs on page
     wp_enqueue_script( 'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ ) );
     wp_enqueue_style( 'slick-css', plugins_url( 'js-client/slick/slick.css', __FILE__ ) );
+    wp_enqueue_style( 'wordlift-slick-css', plugins_url( 'js-client/slick/wordliftslick.css', __FILE__ ) );
         
     // get the current post.
     $post = get_post( get_the_ID() );

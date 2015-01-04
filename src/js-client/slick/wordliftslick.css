@@ -1,0 +1,22 @@
+@import url(http://fonts.googleapis.com/css?family=Titillium+Web:400,600,700,300);
+
+.wl-navigator-card {margin-right:2px;}
+.wl-navigator-lens {background-size:cover}
+.wl-navigator-trigger a, .wl-navigator-trigger a:visited {font-size:22px; line-height:1.2em;color:#FFFFFF; padding:10px; display:block; text-decoration:none; font-family: 'Titillium Web', sans-serif;}
+.wl-navigator-context {border:1px solid #666666; height:60px}
+.wl-navigator-context a { color:#666666;display:block; padding:10px; border-top:5px solid #666666; font-family: 'Titillium Web', sans-serif; text-decoration:none; font-size:16px; line-height:1.2em}
+
+.wl-navigator-bg {
+	position:absolute;
+	top:0;
+	display:block;
+	width:100%;
+	height:200px;
+background-color: #292484;
+background-image: -webkit-linear-gradient(135deg,#292484,#dc4225);
+background-image: -moz-linear-gradient(135deg,#292484,#dc4225);
+background-image: -o-linear-gradient(135deg,#292484,#dc4225);
+background-image: linear-gradient(135deg,#292484,#dc4225);
+opacity: 0.6;
+}
+.slick-prev, .slick-next {}
