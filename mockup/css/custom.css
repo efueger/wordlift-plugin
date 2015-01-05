@@ -1,6 +1,6 @@
 .content { padding:0!important; }
-.content .entity-tile {padding:0.2em; margin-top:2px;}
-.selected {background-color:#666666;}
+.content .entity-tile {padding:0.4em; margin-top:6px; margin-bottom:6px; border-bottom:1px solid #f4f4f4}
+.selected {}
 .selected h5 {padding-left:10px; color:#FFFFFF; }
 
 h5{margin:0; padding-left:10px;}
@@ -8,11 +8,20 @@ h5{margin:0; padding-left:10px;}
 .suggested { background-image:url(../img/star.png);
 			 background-repeat:no-repeat;
 			 background-position:95%;
-			 background-size:20px 20px;
-			 
-			 }
-			 
+			 background-size:20px 20px;			 
+}
 .suggested h5{padding-left:10px;}
 
-.out-of-scope { opacity:0.5;  background-color:#f4f4f4; }
+.out-of-scope { opacity:0.5; }
 .out-of-scope h5{padding-left:10px;color:#CCC; }
+
+.place { border-left:8px solid #ff006a}
+.place.selected{background-color:#ff006a;}
+.person{border-left:8px solid #e4ba1b}
+.person.selected{background-color:#e4ba1b;}
+.organization{border-left:8px solid #5698d8}
+.organization.selected{background-color:#5698d8;}
+.thing{border-left:8px solid #0f0575}
+.thing.selected{background-color:#0f0575;}
+.event{border-left:8px solid #029e0d}
+.event.selected{background-color:#029e0d;}
