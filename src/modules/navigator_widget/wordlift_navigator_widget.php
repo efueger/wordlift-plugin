@@ -12,8 +12,8 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
     // add as first the most recent article in the same iptc category
     $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post_id );
     if( isset( $related_posts->ID ) ) {
-        $related_posts_ids = array( $related_posts->ID );
-        $related_posts = array( $related_posts->ID );
+        $related_posts_ids = array( array( $related_posts->ID ) );
+        $related_posts = array( array( $related_posts->ID, $related_posts->ID ) );
     } else {
         $related_posts_ids = array();
         $related_posts = array();
@@ -52,28 +52,28 @@ function wordlift_shortcode_navigator() {
     wp_enqueue_script( 'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ ) );
     wp_enqueue_style( 'slick-css', plugins_url( 'js-client/slick/slick.css', __FILE__ ) );
     wp_enqueue_style( 'wordlift-slick-css', plugins_url( 'js-client/slick/wordliftslick.css', __FILE__ ) );
-        
-    // get the current post.
-    $post = get_post( get_the_ID() );
     
     // get posts that will populate the navigator (criteria may vary, see function *wordlift_shortcode_navigator_populate*)
-    $related_posts_and_entities = wordlift_shortcode_navigator_populate( $post->ID );
+    $related_posts_and_entities = wordlift_shortcode_navigator_populate( get_the_ID() );
     
     // build the HTML
     $counter = 0;
     $content = '<div id="wl-navigator-widget">';
-
+    
+    var_dump($related_posts_and_entities);
     foreach ( $related_posts_and_entities as $related_post_entity ) {
         
         $related_post_id = $related_post_entity[0];
         $related_post = get_post( $related_post_id );
+        
+        var_dump($related_post_id);
         
         $thumb = wl_get_the_post_thumbnail_src( get_the_post_thumbnail( $related_post_id, 'medium' ) );
         if( empty( $thumb ) ) {
             $thumb = plugins_url( 'js-client/slick/missing-image-150x150.png', __FILE__ );
         }
         
-        if( $counter == 0 || !isset( $related_post_entity[1] ) ) {
+        if( $counter == 0 ) {
             // the first card is a post suggested by category
             $context_link = get_iptc_category_links( $related_post_id, true );
             $context_name = get_iptc_category_names( $related_post_id, true );
@@ -82,7 +82,9 @@ function wordlift_shortcode_navigator() {
             $context_link = get_permalink( $related_post_entity[1] );
             $context_name = get_post( $related_post_entity[1] )->post_name;
         }
+        $counter+=1;
         
+        // build card HTML
         $content .= '<div class="wl-navigator-card">
             <div class="wl-navigator-lens" style="background-image:url(' . $thumb . ')">
                 <span class="wl-navigator-trigger">
@@ -93,8 +95,6 @@ function wordlift_shortcode_navigator() {
                 <a href="' . $context_link . '">' . $context_name . '</a>
             </div>
         </div>';
-        
-        $counter+=1;
     }
     $content .= '</div>';
 
