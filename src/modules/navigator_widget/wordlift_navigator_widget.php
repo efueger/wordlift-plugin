@@ -12,15 +12,16 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
     // add as first the most recent article in the same iptc category
     $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post_id );
     if( isset( $related_posts->ID ) ) {
+        $related_posts_ids = array( $related_posts->ID );
         $related_posts = array( $related_posts->ID );
     } else {
+        $related_posts_ids = array();
         $related_posts = array();
     }
     
     // get the related entities, and for each one retrieve the most recent post regarding it.
     $related_entities = wl_get_referenced_entity_ids( $post_id );
-    $related_posts_ids = array();
-    $related_entities_ids = array();
+    
     foreach ( $related_entities as $rel_entity ) {
         
         // take the id of posts referencing the entity
@@ -30,16 +31,14 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
         foreach ( $referencing_posts as $referencing_post ) {
             if( isset( $referencing_post->ID )
                     && !in_array( $referencing_post->ID, $related_posts_ids )
-                    && !in_array( $rel_entity, $related_entities_ids )
                     && $referencing_post->ID != $post_id ) {
-                $related_posts_ids = array( $referencing_post->ID );
-                $related_entities_ids = array( $rel_entity );
+                $related_posts_ids[] = $referencing_post->ID;
                 $related_posts[] = array( $referencing_post->ID, $rel_entity );
                 break;
             }
         }
     }
-    
+
     return $related_posts;
 }
 
@@ -63,6 +62,7 @@ function wordlift_shortcode_navigator() {
     // build the HTML
     $counter = 0;
     $content = '<div id="wl-navigator-widget">';
+
     foreach ( $related_posts_and_entities as $related_post_entity ) {
         
         $related_post_id = $related_post_entity[0];
