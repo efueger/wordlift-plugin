@@ -9,6 +9,10 @@
     <script src="js/includes/modernizr.js"></script>
     <style>
       .annotation {
+        padding-bottom: 
+        border-bottom:#999 2px solid;
+      }
+      .annotation> {
         border-bottom:#ccc 2px solid;
       }
     </style>
@@ -32,13 +36,13 @@
   <li class="accordion-navigation">
     <a href="#panel1a">What</a>
     <div id="panel1a" class="content active">
-        <div class="entity-tile selected place">
+        <div class="entity-tile place">
           <h5 id="e_atene" class="ta_atene">atene</h5>
         </div>
-        <div class="entity-tile suggested person">
+        <div class="entity-tile person">
           <h5>draghi</h5>
         </div>
-        <div class="entity-tile out-of-scope organization">
+        <div class="entity-tile organization">
           <h5>bce</h5>
         </div>
         <div class="entity-tile thing">
@@ -84,7 +88,7 @@
 
       $( '.entity-tile h5' ).bind( "click", function() {
           var el = $(this);
-          el.addClass("selected");
+          el.parent().addClass("selected");
           $('.' + el.attr('id')).addClass('disambiguated');
       });
     </script>
