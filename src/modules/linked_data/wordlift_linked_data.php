@@ -101,10 +101,10 @@ function wl_linked_data_save_post_and_related_entities( $post_id ) {
 	// Push the post to Redlink.
 	wl_push_to_redlink( $post->ID );
 
-	add_action( 'wordlift_save_post', 'wordlift_save_post_and_related_entities' );
+	add_action( 'wordlift_save_post', 'wordlift_save_post_and_related_entities', 9 );
 }
 
-add_action( 'wordlift_save_post', 'wordlift_save_post_and_related_entities' );
+add_action( 'wordlift_save_post', 'wordlift_save_post_and_related_entities', 9 );
 
 // TODO: remove this method.
 function wl_save_entities( $entities, $related_post_id = null ) {
