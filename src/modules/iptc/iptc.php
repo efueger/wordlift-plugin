@@ -140,15 +140,30 @@ function get_iptc_category_names( $post_id, $single=false ) {
     $categories = get_the_terms( $post_id, 'iptc' );
     
     foreach( $categories as $category ) {
-        $names[] = $category->name;
+        $names[] = get_iptc_branch_name( $category );
+        if( $single ) {
+            return $names[0];
+        }
     }
     
-    // TODO: build full name! by climbing taxonomy
-    
-    if( $single ) {
-        return $names[0];
-    }
     return $names;
+}
+
+/**
+ * Get full name (parents included) of an iptc category.
+ * 
+ * @param stdClass $category The category object.
+ * 
+ * @return string Full name of the category.
+ */
+function get_iptc_branch_name( $category ) {
+    
+    if( $category->parent == 0 ) {
+        return $category->name;
+    } else {
+        $parent_category = get_term( $category->parent, 'iptc' );
+        return get_iptc_branch_name( $parent_category ) . ' - ' . $category->name;
+    }
 }
 
 /**

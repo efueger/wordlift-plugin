@@ -49,6 +49,11 @@ function wl_get_the_post_thumbnail_src( $img ) {
 
 function wordlift_shortcode_navigator() {
 
+    // avoid building the widget when there is a list of posts.
+    if( !is_single() ) {
+        return;
+    }
+    
     // include mobifyjs on page
     wp_enqueue_script( 'slick-js', plugins_url( 'js-client/slick/slick.min.js', __FILE__ ) );
     wp_enqueue_style( 'slick-css', plugins_url( 'js-client/slick/slick.css', __FILE__ ) );
@@ -61,13 +66,10 @@ function wordlift_shortcode_navigator() {
     $counter = 0;
     $content = '<div id="wl-navigator-widget">';
     
-    var_dump($related_posts_and_entities);
     foreach ( $related_posts_and_entities as $related_post_entity ) {
         
         $related_post_id = $related_post_entity[0];
         $related_post = get_post( $related_post_id );
-        
-        var_dump($related_post_id);
         
         $thumb = wl_get_the_post_thumbnail_src( get_the_post_thumbnail( $related_post_id, 'medium' ) );
         if( empty( $thumb ) ) {
@@ -99,12 +101,17 @@ function wordlift_shortcode_navigator() {
     }
     $content .= '</div>';
 
+    // how many cards
+    $num_cards_on_front = count( $related_posts_and_entities );
+    if( $num_cards_on_front > 3 ) {
+        $num_cards_on_front = 3;   
+    }
     // add js
     $content .= '<script>$=jQuery; $(document).ready(function(){
 
             // Some css fixing
             setTimeout( function() {
-                $(".wl-navigator-lens").height( $(".wl-navigator-lens").width() );
+                $(".wl-navigator-lens").height( "100px" );
             }, 500);
             setInterval( function(){
                 $(".slick-prev, .slick-next").css("background", "gray");
@@ -114,7 +121,7 @@ function wordlift_shortcode_navigator() {
             $("#wl-navigator-widget").slick({
                 dots: true,
                 infinite: true,
-                slidesToShow: 3,
+                slidesToShow: ' . $num_cards_on_front . ',
                 slidesToScroll: 1
             });
         });
