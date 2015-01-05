@@ -1,9 +1,12 @@
-.dx .content { padding:0!important; }
-.dx .content .entity-tile {padding:0.4em; margin-top:6px; margin-bottom:6px; border-bottom:1px solid #f4f4f4}
-.dx .selected {}
-.dx .selected h5 {padding-left:10px; color:#FFFFFF; }
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700);
 
-.dx h5{margin:0; padding-left:10px;}
+.dx .content { padding:0!important; font-family: 'Open Sans', sans-serif;}
+.dx .content .entity-tile {padding:0.4em; margin-top:6px; margin-bottom:6px; border-bottom:1px solid #f4f4f4; font-family: 'Open Sans', sans-serif;}
+.dx .selected {}
+.dx .selected h5 {padding-left:10px; color:#FFFFFF; font-family: 'Open Sans', sans-serif;}
+
+.dx h5{margin:0; padding-left:10px; font-family: 'Open Sans', sans-serif;}
 
 .dx .suggested { background-image:url(../img/star.png);
 			 background-repeat:no-repeat;
@@ -25,3 +28,7 @@
 .dx .thing.selected{background-color:#0f0575;}
 .dx .event{border-left:8px solid #029e0d}
 .dx .event.selected{background-color:#029e0d;}
+
+.dx .accordion-navigation a{ font-size:18px; padding-bottom:0.2em; padding-top:0.2em; text-transform:uppercase; font-weight:500;}
+
+.tinymce-wrapper { background-color:#f4f4f4}
