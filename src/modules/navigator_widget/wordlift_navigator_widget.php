@@ -7,6 +7,15 @@ function wordlift_register_shortcode_navigator() {
     add_shortcode('wl-navigator', 'wordlift_shortcode_navigator');
 }
 
+/**
+ * Get list of posts that will populate the navigator.
+ * 
+ * @param int $post_id Id of the post.
+ * 
+ * @return Array List of posts organized in this way:
+ *      Array[0] = Array( id_of_recommended_post_from_the_same_category, null )
+ *      Array[n] = Array( id_of_other_post_recommended_from_entity, id_of_that_entity )
+ */
 function wordlift_shortcode_navigator_populate( $post_id ) {
     
     // add as first the most recent article in the same iptc category
@@ -43,10 +52,22 @@ function wordlift_shortcode_navigator_populate( $post_id ) {
     return $related_posts;
 }
 
+/**
+ * Extract image URL from the output of *get_the_post_thumbnail*.
+ * 
+ * @param string $img Output of *get_the_post_thumbnail*.
+ * 
+ * @return string Url of the image.
+ */
 function wl_get_the_post_thumbnail_src( $img ) {
   return (preg_match('~\bsrc="([^"]++)"~', $img, $matches)) ? $matches[1] : '';
 }
 
+/**
+ * Execute the [wl_navigator] shortcode.
+ * 
+ * @return string HTML of the navigator.
+ */
 function wordlift_shortcode_navigator() {
 
     // avoid building the widget when there is a list of posts.
