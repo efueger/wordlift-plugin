@@ -1,9 +1,9 @@
 .content { padding:0!important; }
 .content .entity-tile {padding:0.2em; margin-top:2px;}
 .selected {background-color:#666666;}
-.selected h2 {padding-left:10px; color:#FFFFFF; }
+.selected h5 {padding-left:10px; color:#FFFFFF; }
 
-h2{margin:0; padding-left:10px;}
+h5{margin:0; padding-left:10px;}
 
 .suggested { background-image:url(../img/star.png);
 			 background-repeat:no-repeat;
@@ -12,7 +12,7 @@ h2{margin:0; padding-left:10px;}
 			 
 			 }
 			 
-.suggested h2{padding-left:10px;}
+.suggested h5{padding-left:10px;}
 
 .out-of-scope { opacity:0.5;  background-color:#f4f4f4; }
-.out-of-scope h2{padding-left:10px;color:#CCC; }
+.out-of-scope h5{padding-left:10px;color:#CCC; }
