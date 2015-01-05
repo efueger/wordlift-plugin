@@ -50,7 +50,7 @@ function wl_add_iptc_classification_to_post( $post_id, $label, $code ) {
 
 	// Add the last created / loaded term to the current post
 	// TODO Maybe parent categories should be added too 
-	wp_set_post_terms( $post_id, $parent_term_id, "iptc", false );
+	wp_set_post_terms( $post_id, $parent_term_id, "iptc", true );
 
 	return true;
 }
@@ -161,7 +161,10 @@ function get_iptc_category_names( $post_id, $single=false ) {
 function wl_iptc_get_most_recent_post_in_same_category( $post_id ) {
     
     $categories = get_the_terms( $post_id, 'iptc' );
-    
+
+    if (!$categories) {
+        return null;
+    }
     // I don't know how to take the first element of an *object*... TODO: avoid the loop.
     foreach( $categories as $category ) {
         $iptc_category = $category->slug;
