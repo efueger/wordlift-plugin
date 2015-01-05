@@ -10,13 +10,14 @@ function wordlift_register_shortcode_navigator() {
 function wordlift_shortcode_navigator_populate( $post_id ) {
     
     // add as first the most recent article in the same iptc category
-    $related_posts = wl_iptc_get_most_recent_post_in_same_category( $post_id );
-    if( isset( $related_posts->ID ) ) {
-        $related_posts_ids = array( array( $related_posts->ID ) );
-        $related_posts = array( array( $related_posts->ID, $related_posts->ID ) );
-    } else {
-        $related_posts_ids = array();
-        $related_posts = array();
+    $most_recent_related_post = wl_iptc_get_most_recent_post_in_same_category( $post_id );
+    
+    // prepare structures to memorize other related posts
+    $related_posts_ids = array();
+    $related_posts = array();
+    if( isset( $most_recent_related_post->ID ) ) {
+        $related_posts_ids[] = $most_recent_related_post->ID;
+        $related_posts[] = array( $most_recent_related_post->ID, null );
     }
     
     // get the related entities, and for each one retrieve the most recent post regarding it.
@@ -80,7 +81,7 @@ function wordlift_shortcode_navigator() {
         } else {
             // the other cards are suggested by entities
             $context_link = get_permalink( $related_post_entity[1] );
-            $context_name = get_post( $related_post_entity[1] )->post_name;
+            $context_name = get_post( $related_post_entity[1] )->post_title;
         }
         $counter+=1;
         
