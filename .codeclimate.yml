@@ -17,7 +17,7 @@ engines:
     enabled: true
     config:
       extensions: "php"
-    #  standard: "PSR1,PSR2"
+      standard: "PSR1,PSR2"
     checks:
       PSR2 Methods FunctionCallSignature SpaceAfterOpenBracket:
         enabled: false
