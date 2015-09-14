@@ -15,8 +15,9 @@
 engines:
   phpcodesniffer:
     enabled: true
-    config:
-      file_extensions: "php"
+    checks:
+      PSR2 Methods FunctionCallSignature SpaceAfterOpenBracket:
+        enabled: false
   fixme:
     enabled: false
 
